@@ -1,5 +1,5 @@
 # Gyver Lamp Domoticz Plugin
-# Плагин поддержки Gyver Lamp для системы автоматизации Domoticz
+Плагин поддержки Gyver Lamp для системы автоматизации Domoticz
 
 ## Установка:
 ```
