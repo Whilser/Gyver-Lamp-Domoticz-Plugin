@@ -36,7 +36,6 @@ class BasePlugin:
     UNIT_SCALE = 3
     UNIT_EFFECTS = 4
 
-    nextTimeSync = 0
     discovered = False
     id = 1
     IP = ''
@@ -57,10 +56,8 @@ class BasePlugin:
         self.loadConfig()
         self.createLamp()
 
-        self.nextTimeSync = 0
-
         DumpConfigToLog()
-        Domoticz.Heartbeat(20)
+        Domoticz.Heartbeat(60)
 
     def onStop(self):
         Domoticz.Debug("onStop called")
@@ -125,10 +122,9 @@ class BasePlugin:
         Domoticz.Debug("onHeartbeat called")
 
         if Parameters['Mode1'] == '0': return
-        self.nextTimeSync -= 1
 
         try:
-            if (self.nextTimeSync <= 0) and (self.UNIT_LAMP in Devices):
+            if (self.UNIT_LAMP in Devices):
                 reply = self.sendCommand("GET").split()
 
                 if (reply[5] == "1"):
