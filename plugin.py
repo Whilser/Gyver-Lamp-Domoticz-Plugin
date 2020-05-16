@@ -129,19 +129,19 @@ class BasePlugin:
 
                 if (reply[5] == "1"):
                     if ((Devices[self.UNIT_LAMP].sValue != 'On') or (Devices[self.UNIT_LAMP].nValue != 1) or (Devices[self.UNIT_LAMP].TimedOut == True)):
-                        Devices[self.UNIT_LAMP].Update(nValue=1, sValue=reply[2], TimedOut = False)
+                        Devices[self.UNIT_LAMP].Update(nValue=reply[2], sValue='On', TimedOut = False)
 
                     if (self.UNIT_SCALE in Devices):
                       if ((Devices[self.UNIT_SCALE].sValue != 'On') or (Devices[self.UNIT_SCALE].nValue != 1) or (Devices[self.UNIT_SCALE].TimedOut == True)):
-                        Devices[self.UNIT_SCALE].Update(nValue=1, sValue=reply[4], TimedOut = False)
+                        Devices[self.UNIT_SCALE].Update(nValue=reply[4], sValue=Devices[self.UNIT_SCALE].sValue, TimedOut = False)
 
                     if (self.UNIT_SPEED in Devices):
                       if ((Devices[self.UNIT_SPEED].sValue != 'On') or (Devices[self.UNIT_SPEED].nValue != 1) or (Devices[self.UNIT_SPEED].TimedOut == True)):
-                        Devices[self.UNIT_SPEED].Update(nValue=1, sValue=reply[3], TimedOut = False)
+                        Devices[self.UNIT_SPEED].Update(nValue=reply[4], sValue=Devices[self.UNIT_SPEED].sValue, TimedOut = False)
 
                 if (reply[5] == "0"):
                     if ((Devices[self.UNIT_LAMP].sValue != 'Off') or (Devices[self.UNIT_LAMP].nValue != 0) or (Devices[self.UNIT_LAMP].TimedOut == True)):
-                        Devices[self.UNIT_LAMP].Update(nValue=0, sValue='Off', TimedOut = False)
+                        Devices[self.UNIT_LAMP].Update(nValue=reply[2], sValue='Off', TimedOut = False)
 
                     if (self.UNIT_SCALE in Devices):
                       if ((Devices[self.UNIT_SCALE].sValue != 'Off') or (Devices[self.UNIT_SCALE].nValue != 0) or (Devices[self.UNIT_SCALE].TimedOut == True)):
