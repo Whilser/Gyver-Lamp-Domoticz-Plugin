@@ -1,5 +1,5 @@
 # Gyver Lamp Domoticz Plugin
-Плагин поддержки Gyver Lamp для системы автоматизации Domoticz
+Плагин поддержки Gyver Lamp для системы автоматизации Domoticz. 
 Работает с версией прошивки https://github.com/Whilser/GyverLamp
 
 ## Установка:
