@@ -14,6 +14,7 @@ sudo service domoticz restart
 ```
 ## Обновление:
 ```cd domoticz/plugins/GyverLamp
+cd domoticz/plugins
 git pull
 sudo service domoticz restart
 ```
