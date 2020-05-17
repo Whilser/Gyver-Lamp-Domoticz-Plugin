@@ -246,6 +246,10 @@ class BasePlugin:
             else:
                 Domoticz.Log('Connected to device ID: {0} with IP address: {1}'.format(self.deviceID, self.IP))
                 self.discovered = True
+
+                for x in Devices:
+                    if  Devices[x].TimedOut == True: Devices[x].Update(nValue=Devices[x].nValue, sValue=Devices[x].sValue, TimedOut = False)
+
                 return self.discovered
 
         Domoticz.Log('Starting discover with Device ID: {}.'.format(deviceID))
@@ -274,7 +278,7 @@ class BasePlugin:
 
                 else:
                     if self.deviceID == deviceID:
-                        Domoticz.Log('Connected to device ID: {0} with IP address: {1}'.format(self.deviceID, self.IP))
+                        Domoticz.Log('Discovered. Connected to device ID: {0} with IP address: {1}'.format(self.deviceID, self.IP))
 
                         config = {
                             "DeviceID": self.deviceID,
@@ -286,12 +290,12 @@ class BasePlugin:
                         with open(config_Path, 'w') as outfile:
                             if json.dump(config, outfile, indent=4): Domoticz.Debug('Config file was saved.')
 
-                    self.discovered = True
+                        self.discovered = True
 
-                    for x in Devices:
-                        if  Devices[x].TimedOut == True: Devices[x].Update(nValue=Devices[x].nValue, sValue=Devices[x].sValue, TimedOut = False)
+                        for x in Devices:
+                            if  Devices[x].TimedOut == True: Devices[x].Update(nValue=Devices[x].nValue, sValue=Devices[x].sValue, TimedOut = False)
 
-                    return self.discovered
+                        return self.discovered
 
             except socket.timeout:
                 Domoticz.Log('Discovery done')
@@ -306,6 +310,8 @@ class BasePlugin:
             except Exception as ex:
                 Domoticz.Error('Error while reading discover results: {0}'.format(ex))
                 break
+
+        return self.discovered
 
 global _plugin
 _plugin = BasePlugin()
