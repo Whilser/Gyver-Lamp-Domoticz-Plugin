@@ -82,35 +82,39 @@ class BasePlugin:
             if Command == 'On':
                 reply = self.sendCommand('P_ON').split()
                 if reply[5] == '1':
-                    Devices[Unit].Update(nValue=1, sValue='On', TimedOut = False)
-                    if self.UNIT_SPEED in Devices: Devices[self.UNIT_SPEED].Update(nValue=1, sValue='On')
-                    if self.UNIT_SCALE in Devices: Devices[self.UNIT_SCALE].Update(nValue=1, sValue='On')
-                    if self.UNIT_EFFECTS in Devices: Devices[self.UNIT_EFFECTS].Update(nValue=1, sValue=Devices[self.UNIT_EFFECTS].sValue)
+                    if self.UNIT_LAMP in Devices: Devices[self.UNIT_LAMP].Update(nValue=1, sValue='On', TimedOut = False)
+                    if self.UNIT_SPEED in Devices: Devices[self.UNIT_SPEED].Update(nValue=1, sValue='On', TimedOut = False)
+                    if self.UNIT_SCALE in Devices: Devices[self.UNIT_SCALE].Update(nValue=1, sValue='On', TimedOut = False)
+                    if self.UNIT_EFFECTS in Devices: Devices[self.UNIT_EFFECTS].Update(nValue=1, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
 
             elif Command == 'Off':
                 reply = self.sendCommand('P_OFF').split()
                 if reply[5] == '0':
-                    Devices[Unit].Update(nValue=0, sValue='Off', TimedOut = False)
-                    if self.UNIT_SPEED in Devices: Devices[self.UNIT_SPEED].Update(nValue=0, sValue='0')
-                    if self.UNIT_SCALE in Devices: Devices[self.UNIT_SCALE].Update(nValue=0, sValue='0')
-                    if self.UNIT_EFFECTS in Devices: Devices[self.UNIT_EFFECTS].Update(nValue=0, sValue=Devices[self.UNIT_EFFECTS].sValue)
+                    if self.UNIT_LAMP in Devices: Devices[self.UNIT_LAMP].Update(nValue=0, sValue='Off', TimedOut = False)
+                    if self.UNIT_SPEED in Devices: Devices[self.UNIT_SPEED].Update(nValue=0, sValue='Off', TimedOut = False)
+                    if self.UNIT_SCALE in Devices: Devices[self.UNIT_SCALE].Update(nValue=0, sValue='Off', TimedOut = False)
+                    if self.UNIT_EFFECTS in Devices: Devices[self.UNIT_EFFECTS].Update(nValue=0, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
 
             elif Command == 'Set Level':
                 if (Unit == self.UNIT_LAMP):
                   reply = self.sendCommand('BRI ' + str(Level)).split()
-                  if reply[0] == 'BRI': Devices[Unit].Update(nValue=1, sValue=reply[1], TimedOut = False)
+                  if reply[0] == 'BRI': Devices[self.UNIT_LAMP].Update(nValue=1, sValue=reply[1], TimedOut = False)
 
-                if (Unit == self.UNIT_SCALE):
+                elif (Unit == self.UNIT_SCALE):
                   reply = self.sendCommand('SCA ' + str(Level)).split()
-                  if reply[0] == 'SCA': Devices[Unit].Update(nValue=1, sValue=reply[1], TimedOut = False)
+                  if reply[0] == 'SCA': Devices[self.UNIT_SCALE].Update(nValue=1, sValue=reply[1], TimedOut = False)
 
-                if (Unit == self.UNIT_SPEED):
+                elif (Unit == self.UNIT_SPEED):
                   reply = self.sendCommand('SPD ' + str(Level)).split()
-                  if reply[0] == 'SPD': Devices[Unit].Update(nValue=1, sValue=reply[1], TimedOut = False)
+                  if reply[0] == 'SPD': Devices[self.UNIT_SPEED].Update(nValue=1, sValue=reply[1], TimedOut = False)
 
         except Exception as e:
-            Domoticz.Error('Error send command to {0} with IP {1}. Device is not responding, check power/network connection. Errror: {2}'.format(Parameters['Name'], self.IP, e.__class__))
-            Devices[Unit].Update(nValue=Devices[Unit].nValue, sValue=Devices[Unit].sValue, TimedOut = True)
+            Domoticz.Log('Error send command to {0} with IP {1}. Device is not responding, check power/network connection. Errror: {2}'.format(Parameters['Name'], self.IP, e.__class__))
+
+            Devices[self.UNIT_LAMP].Update(nValue=Devices[self.UNIT_LAMP].nValue, sValue=Devices[self.UNIT_LAMP].sValue, TimedOut = True)
+            Devices[self.UNIT_SPEED].Update(nValue=Devices[self.UNIT_SPEED].nValue, sValue=Devices[self.UNIT_SPEED].sValue, TimedOut = True)
+            Devices[self.UNIT_SCALE].Update(nValue=Devices[self.UNIT_SCALE].nValue, sValue=Devices[self.UNIT_SCALE].sValue, TimedOut = True)
+            Devices[self.UNIT_EFFECTS].Update(nValue=Devices[self.UNIT_EFFECTS].nValue, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = True)
 
     def onNotification(self, Name, Subject, Text, Status, Priority, Sound, ImageFile):
         Domoticz.Debug("Notification: " + Name + "," + Subject + "," + Text + "," + Status + "," + str(Priority) + "," + Sound + "," + ImageFile)
@@ -133,11 +137,15 @@ class BasePlugin:
 
                     if (self.UNIT_SCALE in Devices):
                       if ((Devices[self.UNIT_SCALE].sValue != 'On') or (Devices[self.UNIT_SCALE].nValue != 1) or (Devices[self.UNIT_SCALE].TimedOut == True)):
-                        Devices[self.UNIT_SCALE].Update(nValue=1, sValue=Devices[self.UNIT_SCALE].sValue, TimedOut = False)
+                        Devices[self.UNIT_SCALE].Update(nValue=1, sValue='On', TimedOut = False)
 
                     if (self.UNIT_SPEED in Devices):
                       if ((Devices[self.UNIT_SPEED].sValue != 'On') or (Devices[self.UNIT_SPEED].nValue != 1) or (Devices[self.UNIT_SPEED].TimedOut == True)):
-                        Devices[self.UNIT_SPEED].Update(nValue=1, sValue=Devices[self.UNIT_SPEED].sValue, TimedOut = False)
+                        Devices[self.UNIT_SPEED].Update(nValue=1, sValue='On', TimedOut = False)
+
+                    if (self.UNIT_EFFECTS in Devices):
+                      if (Devices[self.UNIT_EFFECTS].TimedOut == True):
+                        Devices[self.UNIT_EFFECTS].Update(nValue=Devices[self.UNIT_EFFECTS].nValue, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
 
                 if (reply[5] == "0"):
                     if ((Devices[self.UNIT_LAMP].sValue != 'Off') or (Devices[self.UNIT_LAMP].nValue != 0) or (Devices[self.UNIT_LAMP].TimedOut == True)):
@@ -145,11 +153,15 @@ class BasePlugin:
 
                     if (self.UNIT_SCALE in Devices):
                       if ((Devices[self.UNIT_SCALE].sValue != 'Off') or (Devices[self.UNIT_SCALE].nValue != 0) or (Devices[self.UNIT_SCALE].TimedOut == True)):
-                        Devices[self.UNIT_SCALE].Update(nValue=0, sValue=reply[4], TimedOut = False)
+                        Devices[self.UNIT_SCALE].Update(nValue=0, sValue='Off', TimedOut = False)
 
                     if (self.UNIT_SPEED in Devices):
                       if ((Devices[self.UNIT_SPEED].sValue != 'Off') or (Devices[self.UNIT_SPEED].nValue != 0) or (Devices[self.UNIT_SPEED].TimedOut == True)):
-                        Devices[self.UNIT_SPEED].Update(nValue=0, sValue=reply[3], TimedOut = False)
+                        Devices[self.UNIT_SPEED].Update(nValue=0, sValue='Off', TimedOut = False)
+
+                    if (self.UNIT_EFFECTS in Devices):
+                      if (Devices[self.UNIT_EFFECTS].TimedOut == True):
+                        Devices[self.UNIT_EFFECTS].Update(nValue=Devices[self.UNIT_EFFECTS].nValue, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
 
         except Exception as e:
             Devices[self.UNIT_LAMP].Update(nValue=Devices[self.UNIT_LAMP].nValue, sValue=Devices[self.UNIT_LAMP].sValue, TimedOut = True)
@@ -199,6 +211,7 @@ class BasePlugin:
     def sendCommand(self, command):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.settimeout(5)
             s.sendto(command.encode(), (self.IP, self.port))
             data = s.recvfrom(1024)
             s.close()
@@ -209,7 +222,7 @@ class BasePlugin:
             return data[0].decode()
 
         except Exception as e:
-            Domoticz.Error('Error send command {0} to {1} with IP {2} and port {3}. Device is not responding, check power/network connection. Errror: {4}'.format(command, Parameters['Name'], self.IP, self.port, e.__class__))
+            Domoticz.Log('Could not send command {0} to {1} with IP {2} and port {3}. Device is not responding, check power/network connection. Errror: {4}'.format(command, Parameters['Name'], self.IP, self.port, e.__class__))
 
             for x in Devices:
                 if  Devices[x].TimedOut == False: Devices[x].Update(nValue=Devices[x].nValue, sValue=Devices[x].sValue, TimedOut = True)
