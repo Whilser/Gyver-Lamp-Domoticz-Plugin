@@ -126,6 +126,7 @@ class BasePlugin:
         Domoticz.Debug("onHeartbeat called")
 
         if Parameters['Mode1'] == '0': return
+        if not self.discover(Parameters['Mode1']): return
 
         try:
             if (self.UNIT_LAMP in Devices):
@@ -164,10 +165,8 @@ class BasePlugin:
                         Devices[self.UNIT_EFFECTS].Update(nValue=Devices[self.UNIT_EFFECTS].nValue, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
 
         except Exception as e:
-            Devices[self.UNIT_LAMP].Update(nValue=Devices[self.UNIT_LAMP].nValue, sValue=Devices[self.UNIT_LAMP].sValue, TimedOut = True)
-            Devices[self.UNIT_SCALE].Update(nValue=Devices[self.UNIT_SCALE].nValue, sValue=Devices[self.UNIT_SCALE].sValue, TimedOut = True)
-            Devices[self.UNIT_SPEED].Update(nValue=Devices[self.UNIT_SPEED].nValue, sValue=Devices[self.UNIT_SPEED].sValue, TimedOut = True)
-            Devices[self.UNIT_EFFECTS].Update(nValue=Devices[self.UNIT_EFFECTS].nValue, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = True)
+            for x in Devices:
+                if  Devices[x].TimedOut == False: Devices[x].Update(nValue=Devices[x].nValue, sValue=Devices[x].sValue, TimedOut = True)
 
     def HandleEffects(self, Level):
 
@@ -211,7 +210,7 @@ class BasePlugin:
     def sendCommand(self, command):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.settimeout(5)
+            s.settimeout(4)
             s.sendto(command.encode(), (self.IP, self.port))
             data = s.recvfrom(1024)
             s.close()
