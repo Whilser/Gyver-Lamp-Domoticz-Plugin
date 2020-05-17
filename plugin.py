@@ -6,7 +6,7 @@
         <h2>GyverLamp </h2><br/>
         <h3>Настройка</h3>
         Введите идентификатор лампы. Если ID лампы неизвестен, просто оставьте в поле идентификатора значение 0, это запустит процедуру поиска лампы в сети. <br/>
-        По окончании поиска ID лампы отобразится в Журнале. <br/>
+        По окончании поиска ID лампы отобразится в Журнале. Идетификатор лампы можно также посмотреть в веб интерфейсе на вкладке "Инфо" в графе ID лампы. <br/>
 
     </description>
     <params>
@@ -37,6 +37,7 @@ class BasePlugin:
     UNIT_EFFECTS = 4
 
     discovered = False
+    nextTimeSync = 0
     id = 1
     IP = ''
     port = 0
@@ -57,7 +58,7 @@ class BasePlugin:
         self.createLamp()
 
         DumpConfigToLog()
-        Domoticz.Heartbeat(60)
+        Domoticz.Heartbeat(20)
 
     def onStop(self):
         Domoticz.Debug("onStop called")
@@ -128,8 +129,12 @@ class BasePlugin:
         if Parameters['Mode1'] == '0': return
         if not self.discover(Parameters['Mode1']): return
 
+        self.nextTimeSync -= 1
+
         try:
-            if (self.UNIT_LAMP in Devices):
+            if ((self.nextTimeSync <= 0) and (self.UNIT_LAMP in Devices)):
+                self.nextTimeSync = 3 #синхронизация 1 раз в минуту. 15 - один раз в пять минут
+
                 reply = self.sendCommand("GET").split()
 
                 if (reply[5] == "1"):
