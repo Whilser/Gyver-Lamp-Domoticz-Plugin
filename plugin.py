@@ -150,8 +150,7 @@ class BasePlugin:
                         Devices[self.UNIT_SPEED].Update(nValue=1, sValue='On', TimedOut = False)
 
                     if (self.UNIT_EFFECTS in Devices):
-                      if (Devices[self.UNIT_EFFECTS].TimedOut == True):
-                        Devices[self.UNIT_EFFECTS].Update(nValue=Devices[self.UNIT_EFFECTS].nValue, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
+                        Devices[self.UNIT_EFFECTS].Update(nValue=1, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
 
                 if (reply[5] == "0"):
                     if ((Devices[self.UNIT_LAMP].sValue != 'Off') or (Devices[self.UNIT_LAMP].nValue != 0) or (Devices[self.UNIT_LAMP].TimedOut == True)):
@@ -166,8 +165,7 @@ class BasePlugin:
                         Devices[self.UNIT_SPEED].Update(nValue=0, sValue='Off', TimedOut = False)
 
                     if (self.UNIT_EFFECTS in Devices):
-                      if (Devices[self.UNIT_EFFECTS].TimedOut == True):
-                        Devices[self.UNIT_EFFECTS].Update(nValue=Devices[self.UNIT_EFFECTS].nValue, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
+                        Devices[self.UNIT_EFFECTS].Update(nValue=0, sValue=Devices[self.UNIT_EFFECTS].sValue, TimedOut = False)
 
         except Exception as e:
             for x in Devices:
